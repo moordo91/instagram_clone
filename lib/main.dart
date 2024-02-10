@@ -4,6 +4,8 @@ import 'home.dart' as home;
 import 'upload.dart' as upload;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 import 'package:flutter/rendering.dart';
 
 void main() {
@@ -20,6 +22,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   var tab = 0;
   var data = [];
+  var userImage;
 
   addData(a) {
     setState(() {
@@ -28,8 +31,8 @@ class _MyAppState extends State<MyApp> {
   }
 
   getData() async {
-    var result = await http
-        .get(Uri.parse('https://raw.githubusercontent.com/moordo91/flutter_tutorial/main/data/data.json'));
+    var result = await http.get(Uri.parse(
+        'https://raw.githubusercontent.com/moordo91/flutter_tutorial/main/data/data.json'));
     setState(() {
       data = jsonDecode(result.body);
     });
@@ -48,10 +51,21 @@ class _MyAppState extends State<MyApp> {
         title: Text('Instagram'),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (c) =>
-                  upload.Upload()
-                ));
+              onPressed: () async {
+                var picker = ImagePicker();
+                var image = await picker.pickImage(source: ImageSource.gallery);
+                if (image != null) {
+                  setState(() {
+                    userImage = File(image.path);
+                  });
+                }
+                Image.file(userImage);
+                if (context.mounted) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (c) => upload.Upload(userImage: userImage)));
+                }
               },
               icon: Icon(Icons.add_box_outlined),
               iconSize: 30),

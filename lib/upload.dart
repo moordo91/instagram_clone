@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Upload extends StatelessWidget {
-  const Upload({super.key});
+  const Upload({super.key, this.userImage});
+  final userImage;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +19,9 @@ class Upload extends StatelessWidget {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Image.file(userImage),
           Text('Upload page'),
+          TextField(),
         ],
       ),
     );
