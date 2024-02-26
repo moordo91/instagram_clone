@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'package:flutter/rendering.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MaterialApp(theme: style.theme, home: MyApp())); // runApp
@@ -23,6 +23,35 @@ class _MyAppState extends State<MyApp> {
   var tab = 0;
   var data = [];
   var userImage;
+  var userContent;
+
+  saveData() async {
+    var storage = await SharedPreferences.getInstance();
+    storage.setString('name', 'User 321');
+    var result = storage.get('name');
+    print(result);
+  }
+
+  addMyData(){
+    var myData = {
+      'id': data.length,
+      'image': userImage,
+      'likes': 5,
+      'date': 'July 25',
+      'content': userContent,
+      'liked': false,
+      'user': 'User 123'
+    };
+    setState(() {
+      data.insert(0, myData);
+    });
+  }
+
+  setUserContent(a) {
+    setState(() {
+      userContent = a;
+    });
+  }
 
   addData(a) {
     setState(() {
@@ -41,6 +70,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    saveData();
     getData();
   }
 
@@ -64,7 +94,10 @@ class _MyAppState extends State<MyApp> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (c) => upload.Upload(userImage: userImage)));
+                          builder: (c) => upload.Upload(
+                            userImage: userImage,
+                            setUserContent: setUserContent,
+                            addMyData: addMyData,)));
                 }
               },
               icon: Icon(Icons.add_box_outlined),

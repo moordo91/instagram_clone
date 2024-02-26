@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -41,7 +41,8 @@ class _HomeState extends State<Home> {
           itemBuilder: (c, i) {
             return Column(
               children: [
-                Image.network(widget.data[i]['image']),
+                widget.data[i]['image'].runtimeType == String?
+                  Image.network(widget.data[i]['image']) : Image.file(widget.data[i]['image']),
                 Container(
                   constraints: BoxConstraints(maxWidth: 600),
                   padding: EdgeInsets.all(20),
@@ -50,7 +51,18 @@ class _HomeState extends State<Home> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text('좋아요 ${widget.data[i]['likes']}'),
-                      Text(widget.data[i]['user']),
+                      GestureDetector(
+                        child: Text(widget.data[i]['user']),
+                        onTap: (){
+                          Navigator.push(context,
+                          PageRouteBuilder(
+                            pageBuilder: (c, a1, a2) => Profile(),
+                            transitionsBuilder: (c, a1, a2, child) => FadeTransition(opacity: a1, child: child,),
+                            transitionDuration: Duration(milliseconds: 500)
+                          )
+                          );
+                        },
+                      ),
                       Text(widget.data[i]['content']),
                     ],
                   ),
@@ -61,5 +73,18 @@ class _HomeState extends State<Home> {
     } else {
       return CircularProgressIndicator();
     }
+  }
+}
+
+
+class Profile extends StatelessWidget {
+  const Profile({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Text('Profile Page'),
+    );
   }
 }

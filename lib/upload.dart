@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Upload extends StatelessWidget {
-  const Upload({super.key, this.userImage});
+  const Upload({super.key, this.userImage, this.setUserContent, this.addMyData});
   final userImage;
+  final setUserContent;
+  final addMyData;
+
 
   @override
   Widget build(BuildContext context) {
@@ -11,9 +14,9 @@ class Upload extends StatelessWidget {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                addMyData();
               },
-              icon: Icon(Icons.close)),
+              icon: Icon(Icons.send)),
         ],
       ),
       body: Column(
@@ -21,7 +24,9 @@ class Upload extends StatelessWidget {
         children: [
           Image.file(userImage),
           Text('Upload page'),
-          TextField(),
+          TextField(onChanged: (text){
+            setUserContent(text);
+          },),
         ],
       ),
     );
