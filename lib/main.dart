@@ -2,14 +2,21 @@ import 'package:flutter/material.dart';
 import 'style.dart' as style;
 import 'home.dart' as home;
 import 'upload.dart' as upload;
+import 'store.dart' as store;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MaterialApp(theme: style.theme, home: MyApp())); // runApp
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (c) => store.Store1()),
+        ChangeNotifierProvider(create: (c) => store.Store2()),
+      ],
+      child: MaterialApp(theme: style.theme, home: MyApp()))); // runApp
 }
 
 class MyApp extends StatefulWidget {
@@ -32,7 +39,7 @@ class _MyAppState extends State<MyApp> {
     print(result);
   }
 
-  addMyData(){
+  addMyData() {
     var myData = {
       'id': data.length,
       'image': userImage,
@@ -94,10 +101,12 @@ class _MyAppState extends State<MyApp> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (c) => upload.Upload(
-                            userImage: userImage,
-                            setUserContent: setUserContent,
-                            addMyData: addMyData,)));
+                          builder: (c) =>
+                              upload.Upload(
+                                userImage: userImage,
+                                setUserContent: setUserContent,
+                                addMyData: addMyData,
+                              )));
                 }
               },
               icon: Icon(Icons.add_box_outlined),
